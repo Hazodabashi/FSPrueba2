@@ -20,7 +20,7 @@ public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idVenta;
+    private Long idVenta;
     @OneToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "idCliente")
     private Cliente cliente;
