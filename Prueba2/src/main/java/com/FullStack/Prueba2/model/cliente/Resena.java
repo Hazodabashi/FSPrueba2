@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class Resena {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idResena;
-    private int calificacion;
+    private Long idResena;
+    private Integer calificacion;
     @ManyToOne
     @JoinColumn(name = "cliente_id_cliente")
     private Cliente cliente;

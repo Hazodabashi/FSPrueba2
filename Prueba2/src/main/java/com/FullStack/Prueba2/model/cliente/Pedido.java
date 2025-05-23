@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idPedido;
+    private Long idPedido;
     @ManyToOne
     @JoinColumn(name = "cliente_id_cliente", referencedColumnName = "idCliente")
     private Cliente cliente;

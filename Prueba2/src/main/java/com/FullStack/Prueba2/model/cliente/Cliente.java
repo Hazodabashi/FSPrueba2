@@ -16,8 +16,8 @@ import jakarta.persistence.*;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCliente;
-    private String nombreCliente, emailCliente, direccionCliente, passwordCliente;
+    private Long idCliente;
+    private String nombreCliente, emailCliente, direccionCliente;
     @OneToMany
     @JoinTable(name = "cliente_resena", joinColumns = @JoinColumn(name = "cliente_id_cliente"), inverseJoinColumns = @JoinColumn(name = "resena_id_resena"))
     private List<Resena> resenas = new ArrayList<>();

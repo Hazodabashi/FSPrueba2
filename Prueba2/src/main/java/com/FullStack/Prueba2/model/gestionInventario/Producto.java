@@ -14,11 +14,11 @@ public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_producto;
-    private int stock;
+    private Long id_producto;
+    private Integer stock;
     @ManyToOne
     @JoinColumn(name = "proveedor_id", referencedColumnName = "id")
     private Proveedor proveedor;
     private String nombre, descripcion, categoria;
-    private float precio;
+    private Double precio;
 }

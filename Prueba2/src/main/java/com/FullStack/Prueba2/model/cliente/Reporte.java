@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Reporte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String tipo;
     private Date fechaGeneracion;
     private String datos;
