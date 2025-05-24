@@ -26,3 +26,6 @@ public class Resena {
     private Producto producto;
     private String comentario;
 }
+
+
+

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
 import com.FullStack.Prueba2.model.cliente.Pedido;
+import com.FullStack.Prueba2.model.cliente.Resena;
 import com.FullStack.Prueba2.model.gestionInventario.Producto;
 import com.FullStack.Prueba2.repository.cliente.ClienteRepository;
 import com.FullStack.Prueba2.repository.cliente.PedidoRepository;
@@ -28,8 +29,24 @@ public String getAllClientes() {
         output.append("Nombre Cliente: ").append(cliente.getNombreCliente()).append("\n");
         output.append("Email Cliente: ").append(cliente.getEmailCliente()).append("\n");
         output.append("Direccion Cliente: ").append(cliente.getDireccionCliente()).append("\n");
-        output.append("Reseñas: ").append(cliente.getResenas()).append("\n");
 
+        // Reseñas (evitando toString recursivo)
+        if (cliente.getResenas() != null && !cliente.getResenas().isEmpty()) {
+            output.append("Reseñas:\n");
+            for (Resena resena : cliente.getResenas()) {
+                output.append("- ID Reseña: ").append(resena.getIdResena())
+                      .append(", Calificación: ").append(resena.getCalificacion())
+                      .append(", Comentario: ").append(resena.getComentario());
+                if (resena.getProducto() != null) {
+                    output.append(", Producto: ").append(resena.getProducto().getNombre());
+                }
+                output.append("\n");
+            }
+        } else {
+            output.append("Reseñas: Ninguna\n");
+        }
+
+        // Pedidos
         if (cliente.getPedidos() != null && !cliente.getPedidos().isEmpty()) {
             output.append("Pedidos:\n");
             for (Pedido pedido : cliente.getPedidos()) {
@@ -41,7 +58,7 @@ public String getAllClientes() {
                         output.append(producto.getNombre()).append(" (ID: ")
                               .append(producto.getIdProducto()).append("), ");
                     }
-                    output.setLength(output.length() - 2); // Elimina la última coma
+                    output.setLength(output.length() - 2); // Quitar última coma
                 } else {
                     output.append("Ninguno");
                 }

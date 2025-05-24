@@ -1,5 +1,7 @@
 package com.FullStack.Prueba2.controller.cliente;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +31,10 @@ public class ResenaController {
     @PutMapping("/{id}")
     public String updateResena(@PathVariable Long id, @RequestBody Resena resena) {
         return resenaService.updateResena(id, resena);
+    }
+
+    @PostMapping("/agregar")
+    public String agregarResenaDesdeJson(@RequestBody Map<String, Object> datos) {
+        return resenaService.addResenaACliente(datos);
     }
 }
