@@ -14,7 +14,7 @@ public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_producto;
+    private Long idProducto;
     private Integer stock;
     @ManyToOne
     @JoinColumn(name = "proveedor_id", referencedColumnName = "id")
