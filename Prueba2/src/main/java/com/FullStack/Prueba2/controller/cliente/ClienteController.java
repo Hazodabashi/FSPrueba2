@@ -30,11 +30,7 @@ public class ClienteController {
     @PutMapping("/{id}")
     public String updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.updateCliente(id, cliente);
-
-
     }
-
-
     @PostMapping("/{idCliente}/pedidos")
     public String asignarPedido(@PathVariable Long idCliente, @RequestBody Pedido pedido) {
         return clienteService.asignarPedidoACliente(idCliente, pedido);
