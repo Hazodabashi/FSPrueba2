@@ -44,14 +44,11 @@ public class ResenaService {
         }
     }
     //Agregar
-    public String addResena(Resena resena){
-        if(!resenaRepository.existsById(resena.getIdResena())){
-            resenaRepository.save(resena);
-            return "Reseña agregada correctamente";
-        }else{
-            return "Reseña ya existente";
-        }
-    }
+public String addResena(Resena resena) {
+    resenaRepository.save(resena);
+    return "Reseña agregada correctamente";
+}
+
     //Eliminar
     public String deleteResena(Long id){
         if(resenaRepository.existsById(id)){

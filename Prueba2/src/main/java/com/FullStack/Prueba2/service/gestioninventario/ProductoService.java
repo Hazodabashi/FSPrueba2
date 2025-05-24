@@ -51,14 +51,11 @@ public class ProductoService {
     }
 
     //Agregar
-    public String addProducto(Producto producto) {
-        if(!productoRepository.existsById(producto.getIdProducto())){
-            productoRepository.save(producto);
-            return "Producto agregado correctamente";
-        }else{
-            return "Producto ya existente";
-        }
-    }
+public String addProducto(Producto producto) {
+    productoRepository.save(producto);
+    return "Producto agregado correctamente";
+}
+
     //Eliminar
     public String deleteProducto(Long id) {
         if(productoRepository.existsById(id)){

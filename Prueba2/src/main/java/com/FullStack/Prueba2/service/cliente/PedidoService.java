@@ -3,6 +3,7 @@ package com.FullStack.Prueba2.service.cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.FullStack.Prueba2.model.cliente.Pedido;
 import com.FullStack.Prueba2.repository.cliente.PedidoRepository;
 
@@ -43,14 +44,11 @@ public class PedidoService {
         }
     }
     //Agregar
-    public String addPedido(Pedido pedido){
-        if(!pedidoRepository.existsById(pedido.getIdPedido())){
-            pedidoRepository.save(pedido);
-            return "Pedido agregado correctamente";
-        }else{
-            return "Pedido ya existente";
-        }
-    }
+public String addPedido(Pedido pedido) {
+    pedidoRepository.save(pedido);
+    return "Pedido agregado correctamente";
+}
+
     //Eliminar
     public String deletePedido(Long id){
         if(pedidoRepository.existsById(id)){

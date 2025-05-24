@@ -42,14 +42,11 @@ public class VentaService {
         }
     }
     //Agregar
-    public String addVenta(Venta venta) {
-        if(!ventaRepository.existsById(venta.getIdVenta())){
-            ventaRepository.save(venta);
-            return "Venta agregada correctamente";
-        }else{
-            return "Envio ya existente";
-        }
-    }
+public String addVenta(Venta venta) {
+    ventaRepository.save(venta);
+    return "Venta agregada correctamente";
+}
+
     //Eliminar
     public String deleteVenta(Long id) {
         if(ventaRepository.existsById(id)){

@@ -47,14 +47,11 @@ public class EnvioService {
         }
     }
     //Agregar
-    public String addEnvio(Envio envio){
-        if(!envioRepository.existsById(envio.getIdEnvio())){
-            envioRepository.save(envio);
-            return "Envio agregado correctamente";
-        }else{
-            return "Envio ya existente";
-        }
-    }
+public String addEnvio(Envio envio) {
+    envioRepository.save(envio);
+    return "Envío agregado correctamente";
+}
+
     //Eliminar
     public String deleteEnvio(Long id){
         if(envioRepository.existsById(id)){

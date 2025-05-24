@@ -44,14 +44,11 @@ public class ReporteService {
     }
 
     //Agregar
-    public String addReporte(Reporte reporte) {
-        if(!reporteRepository.existsById(reporte.getId())) {
-            reporteRepository.save(reporte);
-            return "Reporte agregado correctamente";
-        }else{
-            return "Reporte ya existente";
-        }
-    }
+public String addReporte(Reporte reporte) {
+    reporteRepository.save(reporte);
+    return "Reporte agregado correctamente";
+}
+
 
     //Eliminar
     public String deleteReporte(Long id) {

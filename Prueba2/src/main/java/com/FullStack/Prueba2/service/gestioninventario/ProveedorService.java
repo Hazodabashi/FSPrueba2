@@ -43,14 +43,11 @@ public class ProveedorService {
     }
 
     //Agregar
-    public String addProveedor(Proveedor proveedor) {
-        if(!proveedorRepository.existsById(proveedor.getId())){
-            proveedorRepository.save(proveedor);
-            return "Proveedor agregado correctamente";
-        }else{
-            return "Proveedor ya existente";
-        }
-    }
+public String addProveedor(Proveedor proveedor) {
+    proveedorRepository.save(proveedor);
+    return "Proveedor agregado correctamente";
+}
+
 
     //Eliminar
     public String deleteProveedor(Long id) {

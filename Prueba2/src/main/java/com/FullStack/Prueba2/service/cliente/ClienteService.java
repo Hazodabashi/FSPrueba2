@@ -47,14 +47,11 @@ public class ClienteService {
     }
 
     //Agregar
-    public String addCliente(Cliente cliente) {
-        if(!clienteRepository.existsById(cliente.getIdCliente())){
-            clienteRepository.save(cliente);
-            return "Cliente agregado correctamente";
-        }else{
-            return "Cliente ya existente";
-        }
-    }
+public String addCliente(Cliente cliente) {
+    clienteRepository.save(cliente);
+    return "Cliente agregado correctamente";
+}
+
 
     //ELiminar
     public String deleteCliente(Long id) {
