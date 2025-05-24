@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.FullStack.Prueba2.model.gestionInventario.Producto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,8 +20,10 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPedido;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id_cliente", referencedColumnName = "idCliente")
+    @JsonBackReference
     private Cliente cliente;
     private String estado;
     @ManyToMany

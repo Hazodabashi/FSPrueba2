@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
+import com.FullStack.Prueba2.model.cliente.Pedido;
 import com.FullStack.Prueba2.service.cliente.ClienteService;
 
 @RestController
@@ -29,5 +30,14 @@ public class ClienteController {
     @PutMapping("/{id}")
     public String updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.updateCliente(id, cliente);
+
+
     }
+
+
+    @PostMapping("/{idCliente}/pedidos")
+    public String asignarPedido(@PathVariable Long idCliente, @RequestBody Pedido pedido) {
+        return clienteService.asignarPedidoACliente(idCliente, pedido);
+    }
+
 }

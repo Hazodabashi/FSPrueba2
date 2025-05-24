@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Data
@@ -29,6 +31,7 @@ public class Cliente {
     private List<Resena> resenas = new ArrayList<>();
     @OneToMany
     @JoinTable(name = "cliente_pedido", joinColumns = @JoinColumn(name = "cliente_id_cliente"), inverseJoinColumns = @JoinColumn(name = "pedido_id_pedido"))
+    @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
 
 
