@@ -26,13 +26,19 @@ public class Cliente {
     @Column(length = 13,nullable = false)
     private String run;
 
-    @OneToMany
-    @JoinTable(name = "cliente_resena", joinColumns = @JoinColumn(name = "cliente_id_cliente"), inverseJoinColumns = @JoinColumn(name = "resena_id_resena"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "cliente_resena", 
+    joinColumns = @JoinColumn(name = "cliente_id_cliente"), 
+    inverseJoinColumns = @JoinColumn(name = "resena_id_resena"))
     private List<Resena> resenas = new ArrayList<>();
-    @OneToMany
-    @JoinTable(name = "cliente_pedido", joinColumns = @JoinColumn(name = "cliente_id_cliente"), inverseJoinColumns = @JoinColumn(name = "pedido_id_pedido"))
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "cliente_pedido", 
+    joinColumns = @JoinColumn(name = "cliente_id_cliente"), 
+    inverseJoinColumns = @JoinColumn(name = "pedido_id_pedido"))
     @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
+
 
 
 

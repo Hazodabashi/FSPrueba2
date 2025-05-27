@@ -1,5 +1,6 @@
 package com.FullStack.Prueba2.service.cliente;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,16 @@ import org.springframework.stereotype.Service;
 import com.FullStack.Prueba2.model.cliente.Cliente;
 import com.FullStack.Prueba2.model.cliente.Pedido;
 import com.FullStack.Prueba2.model.cliente.Resena;
+import com.FullStack.Prueba2.model.envio.Envio;
 import com.FullStack.Prueba2.model.gestionInventario.Producto;
+import com.FullStack.Prueba2.model.venta.Venta;
 import com.FullStack.Prueba2.repository.cliente.ClienteRepository;
 import com.FullStack.Prueba2.repository.cliente.PedidoRepository;
+import com.FullStack.Prueba2.repository.cliente.ResenaRepository;
+import com.FullStack.Prueba2.repository.envio.EnvioRepository;
+import com.FullStack.Prueba2.repository.venta.VentaRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClienteService {
@@ -18,6 +26,14 @@ public class ClienteService {
     private ClienteRepository clienteRepository;
     @Autowired
     private PedidoRepository pedidoRepository;
+    @Autowired
+    private VentaRepository ventaRepository;
+    @Autowired
+    private EnvioRepository envioRepository;
+    @Autowired
+    private ResenaRepository resenaRepository;
+
+
 
     //Listar
 public String getAllClientes() {
@@ -119,13 +135,40 @@ public String addCliente(Cliente cliente) {
 
 
     //ELiminar
-    public String deleteCliente(Long id) {
-        if(clienteRepository.existsById(id)){
-            clienteRepository.deleteById(id);
-            return "Cliente eliminado correctamente";
-        }else{
-            return "No se encontraron clientes con esa ID";
+    @Transactional
+    public String borrarClienteYRelacionados(Long clienteId) {
+        if (!clienteRepository.existsById(clienteId)) {
+            return "No se encontró el cliente con ID: " + clienteId;
         }
+
+        // Primero borrar los envíos del cliente
+        List<Envio> envios = envioRepository.findByClienteIdCliente(clienteId);
+        if (!envios.isEmpty()) {
+            envioRepository.deleteAll(envios);
+        }
+
+        // Borrar las ventas del cliente
+        List<Venta> ventas = ventaRepository.findByClienteIdCliente(clienteId);
+        if (!ventas.isEmpty()) {
+            ventaRepository.deleteAll(ventas);
+        }
+
+        // Borrar los pedidos del cliente
+        List<Pedido> pedidos = pedidoRepository.findByClienteIdCliente(clienteId);
+        if (!pedidos.isEmpty()) {
+            pedidoRepository.deleteAll(pedidos);
+        }
+
+        // Borrar las reseñas del cliente
+        List<Resena> resenas = resenaRepository.findByClienteIdCliente(clienteId);
+        if (!resenas.isEmpty()) {
+            resenaRepository.deleteAll(resenas);
+        }
+
+        // Finalmente, borrar el cliente
+        clienteRepository.deleteById(clienteId);
+
+        return "Cliente y sus datos relacionados eliminados correctamente";
     }
 
     //Actualizar
@@ -143,6 +186,8 @@ public String addCliente(Cliente cliente) {
             return "No se encontraron clientes con esa ID";
         }
     }
+
+    
         public String asignarPedidoACliente(Long idCliente, Pedido nuevoPedido) {
         Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
         if (clienteOpt.isPresent()) {

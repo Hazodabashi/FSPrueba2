@@ -1,6 +1,8 @@
 package com.FullStack.Prueba2.controller.cliente;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
@@ -25,7 +27,13 @@ public class ClienteController {
     public String getClienteById(@PathVariable Long id) {return clienteService.getClienteById(id); }
 
     @DeleteMapping("/{id}")
-    public String deleteCliente(@PathVariable Long id) {return clienteService.deleteCliente(id); }
+    public ResponseEntity<String> eliminarClienteYAsociados(@PathVariable Long id) {
+        String resultado = clienteService.borrarClienteYRelacionados(id);
+        if (resultado.contains("no encontrado")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
+        }
+        return ResponseEntity.ok(resultado);
+    }
 
     @PutMapping("/{id}")
     public String updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
