@@ -2,6 +2,7 @@ package com.FullStack.Prueba2.model.envio;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
 import com.FullStack.Prueba2.model.cliente.Pedido;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Envio {
     private Pedido pedido;
     @ManyToOne
     @JoinColumn(name = "cliente_id_cliente")
+    @JsonBackReference
     private Cliente cliente;
     private String direccionEnvio, fechaEnvio, estadoEnvio;
 

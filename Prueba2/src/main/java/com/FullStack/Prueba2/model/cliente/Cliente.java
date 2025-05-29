@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.FullStack.Prueba2.model.envio.Envio;
+import com.FullStack.Prueba2.model.venta.Venta;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -26,20 +28,20 @@ public class Cliente {
     @Column(length = 13,nullable = false)
     private String run;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "cliente_resena", 
-    joinColumns = @JoinColumn(name = "cliente_id_cliente"), 
-    inverseJoinColumns = @JoinColumn(name = "resena_id_resena"))
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Resena> resenas = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "cliente_pedido", 
-    joinColumns = @JoinColumn(name = "cliente_id_cliente"), 
-    inverseJoinColumns = @JoinColumn(name = "pedido_id_pedido"))
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cliente") 
+    @JsonManagedReference
+    private List<Venta> ventas = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Envio> envios = new ArrayList<>();
 
 }
