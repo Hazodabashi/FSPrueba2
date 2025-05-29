@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
 
-import com.FullStack.Prueba2.repository.cliente.ClienteRepository;
 import com.FullStack.Prueba2.service.cliente.ClienteService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -20,15 +19,13 @@ import jakarta.persistence.EntityNotFoundException;
 
 public class ClienteController {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
 
     @Autowired
     private ClienteService clienteService;
 
     @GetMapping
     public List<Cliente> getAllClientes() {
-        return clienteRepository.findAll();
+        return clienteService.getAllClientes();
     }
 
     @PostMapping
@@ -67,8 +64,8 @@ public class ClienteController {
     }
 
 
-@PutMapping("/{id}")
-public ResponseEntity<Map<String, String>> actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, String>> actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
     try {
         clienteService.updateCliente(id, cliente);
         Map<String, String> response = Map.of(
@@ -82,7 +79,7 @@ public ResponseEntity<Map<String, String>> actualizarCliente(@PathVariable Long 
             "message", "Cliente no encontrado"
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
-}
 
 }
