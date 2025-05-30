@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class Resena {
-    
-    
-    
-    
+ 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idResena;

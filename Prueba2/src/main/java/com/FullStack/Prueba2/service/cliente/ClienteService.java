@@ -1,20 +1,11 @@
 package com.FullStack.Prueba2.service.cliente;
 
 import java.util.List;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.FullStack.Prueba2.model.cliente.Cliente;
-
-
-
 import com.FullStack.Prueba2.model.venta.Venta;
 import com.FullStack.Prueba2.repository.cliente.ClienteRepository;
-
-
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -56,15 +47,15 @@ public class ClienteService {
 
     //Actualizar
     public void updateCliente(Long id, Cliente cliente) {
-    Cliente buscado = clienteRepository.findById(id)
+    Cliente cli = clienteRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado"));
 
-    buscado.setNombreCliente(cliente.getNombreCliente());
-    buscado.setEmailCliente(cliente.getEmailCliente());
-    buscado.setDireccionCliente(cliente.getDireccionCliente());
-    buscado.setResenas(cliente.getResenas());
-    buscado.setPedidos(cliente.getPedidos());
+    cli.setNombreCliente(cliente.getNombreCliente());
+    cli.setEmailCliente(cliente.getEmailCliente());
+    cli.setDireccionCliente(cliente.getDireccionCliente());
+    cli.setResenas(cliente.getResenas());
+    cli.setPedidos(cliente.getPedidos());
 
-    clienteRepository.save(buscado);
+    clienteRepository.save(cli);
     }
 }
