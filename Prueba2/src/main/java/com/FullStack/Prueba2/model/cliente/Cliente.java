@@ -3,10 +3,8 @@ package com.FullStack.Prueba2.model.cliente;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.FullStack.Prueba2.model.envio.Envio;
 import com.FullStack.Prueba2.model.venta.Venta;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -36,7 +34,7 @@ public class Cliente {
     @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cliente") 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Venta> ventas = new ArrayList<>();
 

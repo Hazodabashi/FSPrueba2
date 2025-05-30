@@ -1,7 +1,7 @@
 package com.FullStack.Prueba2.model.envio;
 
 import com.FullStack.Prueba2.model.cliente.Cliente;
-import com.FullStack.Prueba2.model.cliente.Pedido;
+import com.FullStack.Prueba2.model.venta.Venta;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
@@ -18,15 +18,14 @@ public class Envio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEnvio;
-    @ManyToOne
-    @JoinColumn(name = "pedido_id_pedido")
-    private Pedido pedido;
+    @OneToOne
+    @JoinColumn(name = "venta_id_venta")
+    private Venta venta;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id_cliente")
     @JsonBackReference
     private Cliente cliente;
     private String direccionEnvio, fechaEnvio, estadoEnvio;
-
-
 
 }

@@ -1,124 +1,80 @@
 package com.FullStack.Prueba2.service.venta;
 
-import java.util.List;
-
+import com.FullStack.Prueba2.model.cliente.Pedido;
+import com.FullStack.Prueba2.model.venta.Venta;
+import com.FullStack.Prueba2.repository.cliente.PedidoRepository;
+import com.FullStack.Prueba2.repository.venta.VentaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.FullStack.Prueba2.model.cliente.Cliente;
-import com.FullStack.Prueba2.model.gestionInventario.Producto;
-import com.FullStack.Prueba2.model.venta.Venta;
-import com.FullStack.Prueba2.repository.venta.VentaRepository;
+import java.util.List;
 
 @Service
 public class VentaService {
+
     @Autowired
     private VentaRepository ventaRepository;
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
-    //Listar
-public String getAllVentas() {
-    StringBuilder output = new StringBuilder();
-
-    for (Venta venta : ventaRepository.findAll()) {
-        output.append("ID Venta: ").append(venta.getIdVenta()).append("\n");
-
-        Cliente cliente = venta.getCliente();
-        if (cliente != null) {
-            output.append("Cliente ID: ").append(cliente.getIdCliente()).append("\n")
-                  .append("Nombre: ").append(cliente.getNombreCliente()).append("\n")
-                  .append("Email: ").append(cliente.getEmailCliente()).append("\n")
-                  .append("Dirección: ").append(cliente.getDireccionCliente()).append("\n")
-                  .append("RUN: ").append(cliente.getRun()).append("\n");
-        } else {
-            output.append("Cliente: No asignado\n");
-        }
-
-        List<Producto> productos = venta.getProductosVenta();
-        if (productos != null && !productos.isEmpty()) {
-            output.append("Productos Asignados:\n");
-            for (Producto producto : productos) {
-                output.append("- ID: ").append(producto.getIdProducto()).append("\n")
-                      .append("  Nombre: ").append(producto.getNombre()).append("\n")
-                      .append("  Descripción: ").append(producto.getDescripcion()).append("\n")
-                      .append("  Categoría: ").append(producto.getCategoria()).append("\n")
-                      .append("  Precio: $").append(producto.getPrecio()).append("\n")
-                      .append("  Stock: ").append(producto.getStock()).append("\n");
-            }
-        } else {
-            output.append("Productos Asignados: Ninguno\n");
-        }
-
-        output.append("--------------------------------------------------\n");
+    // Listar todas las ventas
+    public List<Venta> getAllVentas() {
+    return ventaRepository.findAll();
     }
 
-    return output.length() == 0 ? "No se encontraron ventas" : output.toString();
+    // Buscar una venta por ID
+    public Venta getVentaById(Long id) {
+    return ventaRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Venta no encontrada con ID: " + id));
+    }
+
+
+
+public Venta addVenta(Venta venta) {
+    // Obtener el pedido asociado desde BD con productos cargados
+    Pedido pedido = pedidoRepository.findById(venta.getPedido().getIdPedido())
+                    .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + venta.getPedido().getIdPedido()));
+
+    // Sumar precios de productos del pedido cargado
+    double total = pedido.getProductos()
+                         .stream()
+                         .mapToDouble(producto -> producto.getPrecio() != null ? producto.getPrecio() : 0)
+                         .sum();
+
+    // Setear total en la venta
+    venta.setTotal(total);
+
+    // Asociar el pedido cargado a la venta para evitar sobreescritura con objeto "incompleto"
+    venta.setPedido(pedido);
+
+    // Guardar la venta
+    Venta ventaGuardada = ventaRepository.save(venta);
+
+    // Actualizar estado del pedido a "pagado"
+    pedido.setEstado("pagado");
+    pedidoRepository.save(pedido);
+
+    return ventaGuardada;
 }
 
-    //Buscar
-public String getVentaById(Long id) {
+
+
+    // Actualizar una venta existente
+    public Venta actualizarVenta(Long id, Venta venta) {
+    Venta ventaExistente = ventaRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Venta no encontrada con ID: " + id));
+
+    ventaExistente.setCliente(venta.getCliente());
+    ventaExistente.setPedido(venta.getPedido());
+    return ventaRepository.save(ventaExistente);
+    }
+
+    // Eliminar una venta
+    public void eliminarVenta(Long id) {
     if (!ventaRepository.existsById(id)) {
-        return "No se encontraron ventas con esa ID";
+        throw new EntityNotFoundException("Venta no encontrada con ID: " + id);
     }
-
-    Venta buscado = ventaRepository.findById(id).get();
-    StringBuilder output = new StringBuilder();
-
-    output.append("ID Venta: ").append(buscado.getIdVenta()).append("\n");
-
-    Cliente cliente = buscado.getCliente();
-    if (cliente != null) {
-        output.append("Cliente ID: ").append(cliente.getIdCliente()).append("\n")
-              .append("Nombre: ").append(cliente.getNombreCliente()).append("\n")
-              .append("Email: ").append(cliente.getEmailCliente()).append("\n")
-              .append("Dirección: ").append(cliente.getDireccionCliente()).append("\n")
-              .append("RUN: ").append(cliente.getRun()).append("\n");
-    } else {
-        output.append("Cliente: No asignado\n");
-    }
-
-    List<Producto> productos = buscado.getProductosVenta();
-    if (productos != null && !productos.isEmpty()) {
-        output.append("Productos Asignados:\n");
-        for (Producto producto : productos) {
-            output.append("- ID: ").append(producto.getIdProducto()).append("\n")
-                  .append("  Nombre: ").append(producto.getNombre()).append("\n")
-                  .append("  Descripción: ").append(producto.getDescripcion()).append("\n")
-                  .append("  Categoría: ").append(producto.getCategoria()).append("\n")
-                  .append("  Precio: $").append(producto.getPrecio()).append("\n")
-                  .append("  Stock: ").append(producto.getStock()).append("\n");
-        }
-    } else {
-        output.append("Productos Asignados: Ninguno\n");
-    }
-
-    return output.toString();
-}
-
-    //Agregar
-public String addVenta(Venta venta) {
-    ventaRepository.save(venta);
-    return "Venta agregada correctamente";
-}
-
-    //Eliminar
-    public String deleteVenta(Long id) {
-        if(ventaRepository.existsById(id)){
-            ventaRepository.deleteById(id);
-            return "Venta eliminada correctamente";
-        }else{
-            return "No se encontraron ventas con esa ID";
-        }
-    }
-    //Actualizar
-    public String updateVenta(Long id, Venta venta) {
-        if(ventaRepository.existsById(id)){
-            Venta buscado = ventaRepository.findById(id).get();
-            buscado.setCliente(venta.getCliente());
-            buscado.setProductosVenta(venta.getProductosVenta());
-            ventaRepository.save(buscado);
-            return "Venta actualizada correctamente";
-        }else{
-            return "No se encontraron ventas con esa ID";
-        }
+    ventaRepository.deleteById(id);
     }
 }

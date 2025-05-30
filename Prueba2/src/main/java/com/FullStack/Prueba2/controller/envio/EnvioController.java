@@ -1,6 +1,10 @@
 package com.FullStack.Prueba2.controller.envio;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.FullStack.Prueba2.model.envio.Envio;
@@ -15,19 +19,30 @@ public class EnvioController {
     private EnvioService envioService;
 
     @GetMapping
-    public String getAllEnvios() {return envioService.getAllEnvios(); }
-
-    @PostMapping
-    public String addEnvio(@RequestBody Envio envio) {return envioService.addEnvio(envio); }
+    public ResponseEntity<List<Envio>> getAllEnvios() {
+    return ResponseEntity.ok(envioService.getAllEnvios());
+    }
 
     @GetMapping("/{id}")
-    public String getEnvioById(@PathVariable Long id) {return envioService.getEnvioById(id); }
+    public ResponseEntity<Envio> getEnvioById(@PathVariable Long id) {
+    return ResponseEntity.ok(envioService.getEnvioById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Envio> addEnvio(@RequestBody Envio envio) {
+    Envio creado = envioService.addEnvio(envio);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    }
 
     @DeleteMapping("/{id}")
-    public String deleteEnvio(@PathVariable Long id) {return envioService.deleteEnvio(id); }
+    public ResponseEntity<Void> eliminarEnvio(@PathVariable Long id) {
+    envioService.eliminarEnvio(id);
+    return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{id}")
-    public String updateEnvio(@PathVariable Long id, @RequestBody Envio envio) {
-        return envioService.updateEnvio(id,envio);
+    public ResponseEntity<Envio> actualizarEnvio(@PathVariable Long id, @RequestBody Envio envio) {
+    Envio actualizado = envioService.actualizarEnvio(id, envio);
+    return ResponseEntity.ok(actualizado);
     }
 }

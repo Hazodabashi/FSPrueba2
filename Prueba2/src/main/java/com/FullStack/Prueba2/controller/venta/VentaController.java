@@ -1,33 +1,51 @@
 package com.FullStack.Prueba2.controller.venta;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.FullStack.Prueba2.model.venta.Venta;
 import com.FullStack.Prueba2.service.venta.VentaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ventas")
-
 public class VentaController {
 
     @Autowired
     private VentaService ventaService;
 
-    @GetMapping
-    public String getAllVentas() {return ventaService.getAllVentas(); }
 
-    @PostMapping
-    public String addVenta(@RequestBody Venta venta) {return ventaService.addVenta(venta); }
+    @GetMapping
+    public ResponseEntity<List<Venta>> getAllVentas() {
+        return ResponseEntity.ok(ventaService.getAllVentas());
+    }
+
 
     @GetMapping("/{id}")
-    public String getVentaById(@PathVariable Long id) {return ventaService.getVentaById(id); }
+    public ResponseEntity<Venta> getVentaById(@PathVariable Long id) {
+        return ResponseEntity.ok(ventaService.getVentaById(id));
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Venta> addVenta(@RequestBody Venta venta) {
+        Venta nuevaVenta = ventaService.addVenta(venta);
+        return ResponseEntity.status(201).body(nuevaVenta);
+    }
+
 
     @DeleteMapping("/{id}")
-    public String deleteVenta(@PathVariable Long id) {return ventaService.deleteVenta(id); }
+    public ResponseEntity<Void> deleteVenta(@PathVariable Long id) {
+        ventaService.eliminarVenta(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PutMapping("/{id}")
-    public String updateVenta(@PathVariable Long id, @RequestBody Venta venta){
-        return ventaService.updateVenta(id, venta);
+    public ResponseEntity<Venta> updateVenta(@PathVariable Long id, @RequestBody Venta venta) {
+        Venta actualizada = ventaService.actualizarVenta(id, venta);
+        return ResponseEntity.ok(actualizada);
     }
 }
+
