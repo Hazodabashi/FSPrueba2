@@ -22,16 +22,16 @@ public class PedidoController {
     }
 
 
-        @GetMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Pedido> obtenerPedidoPorId(@PathVariable Long id) {
-        Pedido pedido = pedidoService.getPedidoById(id);
-        return ResponseEntity.ok(pedido);
+    Pedido pedido = pedidoService.getPedidoById(id);
+    return ResponseEntity.ok(pedido);
     }
 
     @PostMapping
     public ResponseEntity<Pedido> agregarPedido(@RequestBody Pedido pedido) {
-        Pedido pedidoGuardado = pedidoService.addPedido(pedido);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoGuardado);
+    Pedido pedidoGuardado = pedidoService.addPedido(pedido);
+    return ResponseEntity.status(HttpStatus.CREATED).body(pedidoGuardado);
     }
 
     @DeleteMapping("/{id}")
@@ -43,7 +43,7 @@ public class PedidoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Pedido> actualizarPedido(@PathVariable Long id, @RequestBody Pedido pedidoActualizado) {
-        Pedido pedido = pedidoService.actualizarPedido(id, pedidoActualizado);
-        return ResponseEntity.ok(pedido);
+    Pedido pedido = pedidoService.actualizarPedido(id, pedidoActualizado);
+    return ResponseEntity.ok(pedido);
     }
 }

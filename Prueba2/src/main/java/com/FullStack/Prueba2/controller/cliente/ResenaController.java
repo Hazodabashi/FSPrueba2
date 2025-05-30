@@ -1,9 +1,11 @@
 package com.FullStack.Prueba2.controller.cliente;
 
-import java.util.Map;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import com.FullStack.Prueba2.model.cliente.Resena;
 import com.FullStack.Prueba2.service.cliente.ResenaService;
@@ -17,24 +19,33 @@ public class ResenaController {
     private ResenaService resenaService;
 
     @GetMapping
-    public String getAllResenas() {return resenaService.getAllResenas(); }
-
-    @PostMapping
-    public String addResena(@RequestBody Resena resena) {return resenaService.addResena(resena); }
+    public List<Resena> getAllResenas() {
+    return resenaService.getAllResenas();
+    }
 
     @GetMapping("/{id}")
-    public String getResenaById(@PathVariable Long id) {return resenaService.getResenaById(id); }
+    public ResponseEntity<Resena> obtenerResenaPorId(@PathVariable Long id) {
+    Resena resena = resenaService.getResenaById(id);
+    return ResponseEntity.ok(resena);
+    }
+
+    @PostMapping
+    public ResponseEntity<Resena> agregarResena(@RequestBody Resena resena) {
+    Resena resenaGuardada = resenaService.addResena(resena);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resenaGuardada);
+    }
 
     @DeleteMapping("/{id}")
-    public String deleteResena(@PathVariable Long id) { return resenaService.deleteResena(id); }
+    public ResponseEntity<Void> eliminarResena(@PathVariable Long id) {
+    resenaService.eliminarResena(id);
+    return ResponseEntity.noContent().build(); 
+    }
+
 
     @PutMapping("/{id}")
-    public String updateResena(@PathVariable Long id, @RequestBody Resena resena) {
-        return resenaService.updateResena(id, resena);
+    public ResponseEntity<Resena> actualizarResena(@PathVariable Long id, @RequestBody Resena resenaActualizada) {
+    Resena resena = resenaService.actualizarResena(id, resenaActualizada);
+    return ResponseEntity.ok(resena);
     }
 
-    @PostMapping("/agregar")
-    public String agregarResenaDesdeJson(@RequestBody Map<String, Object> datos) {
-        return resenaService.addResenaACliente(datos);
-    }
 }
