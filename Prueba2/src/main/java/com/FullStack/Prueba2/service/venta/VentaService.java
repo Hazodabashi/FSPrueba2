@@ -58,8 +58,6 @@ public Venta addVenta(Venta venta) {
     return ventaGuardada;
 }
 
-
-
     // Actualizar una venta existente
     public Venta actualizarVenta(Long id, Venta venta) {
     Venta ventaExistente = ventaRepository.findById(id)

@@ -1,8 +1,9 @@
 package com.FullStack.Prueba2.controller.gestioninventario;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.FullStack.Prueba2.model.gestionInventario.Producto;
 import com.FullStack.Prueba2.service.gestioninventario.ProductoService;
 
@@ -14,22 +15,36 @@ public class ProductoController{
     @Autowired
     private ProductoService productoService;
 
+
     @GetMapping
-    public String getAllProductos() {return productoService.getAllProductos(); }
-
-    @PostMapping
-    public String addProducto(@RequestBody Producto producto) {return productoService.addProducto(producto); }
-
-    @GetMapping("/{id}")
-    public String getProductoById(@PathVariable Long id) { return productoService.getProductoById(id); }
-
-    @DeleteMapping("/{id}")
-    public String deleteProducto(@PathVariable Long id) { return productoService.deleteProducto(id); }
-
-    @PutMapping("/{id}")
-    public String updateProducto(@PathVariable Long id, @RequestBody Producto producto){
-        return productoService.updateProducto(id,producto);
+    public List<Producto> getAllProductos() {
+        return productoService.getAllProductos();
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Producto> getProductoById(@PathVariable Long id) {
+        Producto producto = productoService.getProductoById(id);
+        return ResponseEntity.ok(producto);
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Producto> addProducto(@RequestBody Producto producto) {
+        Producto nuevoProducto = productoService.addProducto(producto);
+        return ResponseEntity.ok(nuevoProducto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        productoService.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+        Producto productoActualizado = productoService.actualizarProducto(id, producto);
+        return ResponseEntity.ok(productoActualizado);
+    }
 
 }
