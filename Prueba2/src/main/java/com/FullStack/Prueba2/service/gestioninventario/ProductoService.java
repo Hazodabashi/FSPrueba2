@@ -57,7 +57,6 @@ public class ProductoService {
     Producto productoExistente = productoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + id));
     productoExistente.setStock(productoActualizado.getStock());
-    productoExistente.setProveedor(productoActualizado.getProveedor());
     productoExistente.setNombre(productoActualizado.getNombre());
     productoExistente.setDescripcion(productoActualizado.getDescripcion());
     productoExistente.setCategoria(productoActualizado.getCategoria());
