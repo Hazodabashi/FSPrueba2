@@ -1,7 +1,10 @@
 package com.FullStack.Prueba2.service.cliente;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import com.FullStack.Prueba2.model.cliente.Cliente;
@@ -71,18 +74,19 @@ class ClienteServiceTest {
 
     @Test
     void testEliminarCliente() {
-        Cliente cliente = new Cliente();
-        Venta venta1 = new Venta();
-        venta1.setCliente(cliente);
-        cliente.setVentas(Arrays.asList(venta1));
+    Cliente cliente = new Cliente();
+    Venta venta1 = new Venta();
+    venta1.setCliente(cliente);
+    // Usar lista mutable para evitar excepción
+    cliente.setVentas(new ArrayList<>(Arrays.asList(venta1)));
 
-        when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
+    when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
 
-        clienteService.eliminarCliente(1L);
+    clienteService.eliminarCliente(1L);
 
-        assertNull(venta1.getCliente());
-        assertTrue(cliente.getVentas().isEmpty());
-        verify(clienteRepository).delete(cliente);
+    assertNull(venta1.getCliente());
+    assertTrue(cliente.getVentas().isEmpty());
+    verify(clienteRepository).delete(cliente);
     }
 
     @Test
