@@ -12,9 +12,12 @@ import com.FullStack.Prueba2.model.cliente.Cliente;
 
 import com.FullStack.Prueba2.service.cliente.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController
+@Tag(name = "Clientes", description = "EndPoints de clientes")
 @RequestMapping("/api/clientes")
 
 public class ClienteController {
@@ -24,11 +27,13 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
+    @Operation(summary = "Obtener todos los clientes.", description= "Devuelve todos los clientes registrados.")
     public List<Cliente> getAllClientes() {
         return clienteService.getAllClientes();
     }
 
     @PostMapping
+    @Operation(summary="Registra un cliente nuevo.",description = "Registra un cliente nuevo junto con todos sus atributos")
     public ResponseEntity<Cliente> agregarCliente(@RequestBody Cliente cliente) {
     Cliente guardado = clienteService.addCliente(cliente);
     return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
@@ -37,6 +42,7 @@ public class ClienteController {
 
 
     @GetMapping("/{id}")
+    @Operation(summary="Obtiene el Cliente",description = "Obtiene el cliente con la ID ingresada en la URL")
     public ResponseEntity<?> obtenerClientePorId(@PathVariable Long id) {
     try {
         Cliente cliente = clienteService.getClienteById(id);
@@ -52,6 +58,7 @@ public class ClienteController {
 
 
     @DeleteMapping("/{id}")
+    @Operation(summary="Borra el cliente",description = "Borra el cliente con la ID ingresada en la URL")
     public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
     try {
         clienteService.eliminarCliente(id);
@@ -65,6 +72,7 @@ public class ClienteController {
 
 
     @PutMapping("/{id}")
+    @Operation(summary="Actualiza el cliente",description = "Actualiza el Cliente con los atributos ingresados")
     public ResponseEntity<Map<String, String>> actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
     try {
         clienteService.updateCliente(id, cliente);
