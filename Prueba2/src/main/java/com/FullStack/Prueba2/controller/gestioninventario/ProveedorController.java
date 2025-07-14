@@ -1,13 +1,18 @@
 package com.FullStack.Prueba2.controller.gestioninventario;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.FullStack.Prueba2.model.gestionInventario.Proveedor;
 import com.FullStack.Prueba2.service.gestioninventario.ProveedorService;
+import com.FullStack.Prueba2.hateoas.ProveedorModelAssembler;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,40 +20,56 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "Proveedores", description = "EndPoints de proveedores.")
 @RequestMapping("/api/proveedores")
-
 public class ProveedorController {
 
     @Autowired
     private ProveedorService proveedorService;
 
+    @Autowired
+    private ProveedorModelAssembler assembler;
+
     @GetMapping
     @Operation(summary="Lista todos los proveedores.", description = "Lista todos los proveedores")
-    public List<Proveedor> listarTodos() {
-        return proveedorService.obtenerTodos();
+    public ResponseEntity<CollectionModel<EntityModel<Proveedor>>> listarTodos() {
+        List<EntityModel<Proveedor>> proveedores = proveedorService.obtenerTodos().stream()
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+            CollectionModel.of(proveedores,
+                linkTo(methodOn(ProveedorController.class).listarTodos()).withSelfRel())
+        );
     }
 
     @GetMapping("/{id}")
     @Operation(summary="Lista un proveedor.", description = "Lista un proveedor con la ID especificada en el URL.")
-    public ResponseEntity<Proveedor> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<Proveedor>> obtenerPorId(@PathVariable Long id) {
         Proveedor proveedor = proveedorService.obtenerPorId(id);
-        return proveedor != null ? ResponseEntity.ok(proveedor) : ResponseEntity.notFound().build();
+        if (proveedor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(assembler.toModel(proveedor));
     }
 
     @PostMapping
     @Operation(summary="Registra un nuevo proveedor.", description = "Registra un nuevo proveedor con los atributos ingresados.")
-    public Proveedor crear(@RequestBody Proveedor proveedor) {
-        return proveedorService.guardar(proveedor);
+    public ResponseEntity<EntityModel<Proveedor>> crear(@RequestBody Proveedor proveedor) {
+        Proveedor nuevoProveedor = proveedorService.guardar(proveedor);
+        return ResponseEntity
+            .created(linkTo(methodOn(ProveedorController.class).obtenerPorId(nuevoProveedor.getId())).toUri())
+            .body(assembler.toModel(nuevoProveedor));
     }
 
     @PutMapping("/{id}")
     @Operation(summary="Actualiza un proveedor.", description = "Actualiza los atributos de un proveedor con ID especificada en el URL.")
-    public ResponseEntity<Proveedor> actualizar(@PathVariable Long id, @RequestBody Proveedor proveedorActualizado) {
+    public ResponseEntity<EntityModel<Proveedor>> actualizar(@PathVariable Long id, @RequestBody Proveedor proveedorActualizado) {
         Proveedor existente = proveedorService.obtenerPorId(id);
         if (existente == null) {
             return ResponseEntity.notFound().build();
         }
         proveedorActualizado.setId(id);
-        return ResponseEntity.ok(proveedorService.guardar(proveedorActualizado));
+        Proveedor actualizado = proveedorService.guardar(proveedorActualizado);
+        return ResponseEntity.ok(assembler.toModel(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -60,5 +81,4 @@ public class ProveedorController {
         proveedorService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
-
 }
