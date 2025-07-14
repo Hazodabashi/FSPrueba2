@@ -65,26 +65,18 @@ public class ClienteController {
     }
 
 @DeleteMapping("/{id}")
-@Operation(summary="Borra el cliente",description = "Borra el cliente con la ID ingresada en la URL")
-public ResponseEntity<?> eliminarCliente(@PathVariable Long id) {
+@Operation(summary="Borra el cliente", description = "Borra el cliente con la ID ingresada en la URL")
+public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
     try {
         clienteService.eliminarCliente(id);
-
-        // Retorna enlaces útiles tras borrar
-        RepresentationModel<?> response = RepresentationModel.of(Map.of(
-            "status", "success",
-            "message", "Cliente eliminado correctamente"
-        ));
-        response.add(linkTo(methodOn(ClienteController.class).getAllClientes()).withRel("clientes"));
-
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.noContent().build();  // 204 No Content, sin body
     } catch (EntityNotFoundException e) {
         return ResponseEntity.notFound().build();
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
+
 
 
 @PutMapping("/{id}")

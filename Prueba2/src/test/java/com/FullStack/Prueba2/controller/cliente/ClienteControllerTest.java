@@ -1,11 +1,16 @@
 package com.FullStack.Prueba2.controller.cliente;
 
+import com.FullStack.Prueba2.hateoas.ClienteModelAssembler;
 import com.FullStack.Prueba2.model.cliente.Cliente;
 import com.FullStack.Prueba2.service.cliente.ClienteService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.hateoas.EntityModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,27 +40,39 @@ public class ClienteControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private ClienteModelAssembler assembler;
+
+    @MockBean
     private ClienteService clienteService;
 
     private Cliente cliente1;
 
-    @BeforeEach
-    void setup() {
-        cliente1 = new Cliente();
-        cliente1.setIdCliente(1L);
-        cliente1.setNombreCliente("Juan Perez");
-        cliente1.setEmailCliente("juan@email.com");
-        cliente1.setDireccionCliente("Calle 123");
-    }
+@BeforeEach
+void setup() {
+    cliente1 = new Cliente();
+    cliente1.setIdCliente(1L);
+    cliente1.setNombreCliente("Juan Perez");
+    cliente1.setEmailCliente("juan@email.com");
+    cliente1.setDireccionCliente("Calle 123");
 
+    // Mockear assembler para devolver el EntityModel esperado
+    when(assembler.toModel(any(Cliente.class))).thenAnswer(invocation -> {
+        Cliente c = invocation.getArgument(0);
+        return EntityModel.of(c,
+            linkTo(methodOn(ClienteController.class).obtenerClientePorId(c.getIdCliente())).withSelfRel(),
+            linkTo(methodOn(ClienteController.class).getAllClientes()).withRel("clientes")
+        );
+    });
+}
     @Test
     void testGetAllClientes() throws Exception {
         when(clienteService.getAllClientes()).thenReturn(List.of(cliente1));
 
         mockMvc.perform(get("/api/clientes"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].idCliente").value(1L))
-                .andExpect(jsonPath("$[0].nombreCliente").value("Juan Perez"));
+                    .andExpect(jsonPath("$._embedded.clienteList[0].idCliente").value(1L))
+                    .andExpect(jsonPath("$._embedded.clienteList[0].nombreCliente").value("Juan Perez"));
+
     }
 
     @Test
@@ -116,25 +133,37 @@ public class ClienteControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void testActualizarCliente_Existente() throws Exception {
-        Mockito.doNothing().when(clienteService).updateCliente(anyLong(), any(Cliente.class));
+@Test
+void testActualizarCliente_Existente() throws Exception {
+    Cliente clienteActualizado = new Cliente();
+    clienteActualizado.setIdCliente(1L);
+    clienteActualizado.setNombreCliente("Juan Actualizado");
+    clienteActualizado.setEmailCliente("juanactualizado@email.com");
+    clienteActualizado.setDireccionCliente("Calle Nueva 456");
 
-        String clienteJson = """
-            {
-                "nombreCliente": "Juan Actualizado",
-                "emailCliente": "juanactualizado@email.com",
-                "direccionCliente": "Calle Nueva 456"
-            }
-            """;
+    // Simulamos que el servicio devuelve el cliente actualizado
+    when(clienteService.getClienteById(1L)).thenReturn(clienteActualizado);
+    Mockito.doNothing().when(clienteService).updateCliente(anyLong(), any(Cliente.class));
+    when(assembler.toModel(clienteActualizado)).thenReturn(EntityModel.of(clienteActualizado));
 
-        mockMvc.perform(put("/api/clientes/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(clienteJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.message").value("Cliente actualizado correctamente"));
-    }
+    String clienteJson = """
+        {
+            "nombreCliente": "Juan Actualizado",
+            "emailCliente": "juanactualizado@email.com",
+            "direccionCliente": "Calle Nueva 456"
+        }
+        """;
+
+    mockMvc.perform(put("/api/clientes/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(clienteJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.idCliente").value(1))
+            .andExpect(jsonPath("$.nombreCliente").value("Juan Actualizado"))
+            .andExpect(jsonPath("$.emailCliente").value("juanactualizado@email.com"))
+            .andExpect(jsonPath("$.direccionCliente").value("Calle Nueva 456"));
+}
+
 
     @Test
     void testActualizarCliente_NoExistente() throws Exception {
