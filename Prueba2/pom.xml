@@ -5,8 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>3.2.5</version> <!-- 👈 Cambiado de 3.5.0 a 3.2.5 -->
+		<relativePath/>
 	</parent>
 	<groupId>com.FullStack</groupId>
 	<artifactId>Prueba2</artifactId>
@@ -49,7 +49,7 @@
     <artifactId>h2</artifactId>
     <scope>test</scope>
 </dependency>
-
+<!--oracle-->
 <dependency>
 <groupId>com.oracle.database.jdbc</groupId>
 <artifactId>ojdbc8</artifactId>
@@ -68,6 +68,12 @@
 <artifactId>osdt_cert</artifactId>
 <version>19.8.0.0</version>
 </dependency>
+<!--hateoas-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-hateoas</artifactId>
+</dependency>
+
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -95,11 +101,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.30</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
